@@ -1,0 +1,17 @@
+name: adguardhome
+
+services:
+  adguardhome:
+    image: adguard/adguardhome
+    network_mode: "host"
+    restart: always
+    volumes:
+      - config:/opt/adguardhome/conf # app configuration
+      - work:/opt/adguardhome/work # app working directory
+
+volumes:
+  config:
+    driver: local
+  work:
+    driver: local
+
