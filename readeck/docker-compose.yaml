@@ -7,7 +7,7 @@ services:
     image: codeberg.org/readeck/readeck:latest
     container_name: readeck
     ports:
-      - "100.79.21.111:15006:8000"
+      - "${TAILSCALE_IP}:15006:8000"
     environment:
       # Defines the application log level. Can be error, warn, info, debug.
       - READECK_LOG_LEVEL=info

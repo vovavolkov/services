@@ -18,7 +18,7 @@ services:
       - firefly_iii_upload:/var/www/html/storage/upload
     env_file: .env
     ports:
-      - "100.79.21.111:15004:8080"
+      - "${TAILSCALE_IP}:15004:8080"
     depends_on:
       - db
   db:
@@ -40,7 +40,7 @@ services:
     networks:
       - firefly_iii
     ports:
-      - "100.79.21.111:15005:8080"
+      - "${TAILSCALE_IP}:15005:8080"
     depends_on:
       - app
     env_file: .importer.env

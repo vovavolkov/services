@@ -2,5 +2,5 @@ services:
   nullboard:
     image: richardsoper/nullboard:latest
     ports:
-      - "100.79.21.111:15007:80"
+      - "${TAILSCALE_IP}:15007:80"
     container_name: "Nullboard"
