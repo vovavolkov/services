@@ -1,13 +1,11 @@
----
-volumes:
-  readeck-data:
-
 services:
-  app:
+  readeck:
     image: codeberg.org/readeck/readeck:latest
     container_name: readeck
-    ports:
-      - "${TAILSCALE_IP}:15006:8000"
+    expose:
+      - "8000"
+    networks:
+      - caddy_net
     environment:
       # Defines the application log level. Can be error, warn, info, debug.
       - READECK_LOG_LEVEL=info
@@ -21,10 +19,17 @@ services:
       # - READECK_ALLOWED_HOSTS=readeck.example.com
     volumes:
       - readeck-data:/readeck
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "/bin/readeck", "healthcheck", "-config", "config.toml"]
       interval: 30s
       timeout: 2s
       retries: 3
 
+volumes:
+  readeck-data:
+
+networks:
+  caddy_net:
+    name: caddy_net
+    external: true
