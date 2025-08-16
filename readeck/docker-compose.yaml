@@ -17,7 +17,7 @@ services:
       # - READECK_ALLOWED_HOSTS=readeck.example.com
     volumes:
       - readeck-data:/readeck
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: ["CMD", "/bin/readeck", "healthcheck", "-config", "config.toml"]
       interval: 30s
