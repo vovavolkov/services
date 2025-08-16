@@ -2,10 +2,8 @@ services:
   readeck:
     image: codeberg.org/readeck/readeck:latest
     container_name: readeck
-    expose:
-      - "8000"
-    networks:
-      - caddy_net
+    ports:
+      - "100.79.21.111:15006:8000"
     environment:
       # Defines the application log level. Can be error, warn, info, debug.
       - READECK_LOG_LEVEL=info
@@ -29,7 +27,3 @@ services:
 volumes:
   readeck-data:
 
-networks:
-  caddy_net:
-    name: caddy_net
-    external: true
