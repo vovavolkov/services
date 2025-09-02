@@ -6,8 +6,8 @@ services:
     tty: true
     stdin_open: true
     ports:
-      - "${TAILSCALE_IP}:25565:25565"
-      - "${TAILSCALE_IP}:25575:25575"
+      - "100.79.21.111:25565:25565"
+      - "100.79.21.111:25575:25575"
     environment:
       EULA: "TRUE"
       TYPE: "FABRIC"
@@ -37,5 +37,5 @@ services:
       MODRINTH_ALLOWED_VERSION_TYPE: "beta"
       LOG_TIMESTAMP: "true"
     volumes:
-      - "./data:/data"
+      - "/opt/docker/mc-survival:/data"
 
