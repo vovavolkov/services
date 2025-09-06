@@ -1,50 +1,71 @@
+# PUBLIC site
 vovavolkov.com {
-    root * /srv/vovavolkov
+	tls {
+		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+		propagation_delay 2m
+		resolvers 1.1.1.1
+	}
 
-    file_server
+	root * /srv/vovavolkov
+	file_server
 
-    handle_path /files/* {
-        root * /srv/vovavolkov/files
-        file_server browse
-    }
+	handle_path /files/* {
+		root * /srv/vovavolkov/files
+		file_server browse
+	}
 
-    handle /blog/* {
-        root * /srv/vovavolkov
-        file_server
-    }
+	handle /blog/* {
+		root * /srv/vovavolkov
+		file_server
+	}
 }
 
-adguard.home {
-	tls internal
-	reverse_proxy 100.79.21.111:15000
+# PRIVATE services (only Tailnet)
+*.vovavolkov.com {
+	bind 100.79.21.111
+
+	tls {
+		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+		propagation_delay 2m
+		resolvers 1.1.1.1
+	}
+
+	@adguard host adguard.vovavolkov.com
+	handle @adguard {
+		reverse_proxy 100.79.21.111:15000
+	}
+
+	@jellyfin host jellyfin.vovavolkov.com
+	handle @jellyfin {
+		reverse_proxy 100.79.21.111:15002
+	}
+
+	@paperless host paperless.vovavolkov.com
+	handle @paperless {
+		reverse_proxy 100.79.21.111:15003
+	}
+
+	@firefly host firefly.vovavolkov.com
+	handle @firefly {
+		reverse_proxy 100.79.21.111:15004
+	}
+
+	@fireflyimport host fireflyimport.vovavolkov.com
+	handle @fireflyimport {
+		reverse_proxy 100.79.21.111:15005
+	}
+
+	@readeck host readeck.vovavolkov.com
+	handle @readeck {
+		reverse_proxy 100.79.21.111:15006
+	}
+
+	@leantime host leantime.vovavolkov.com
+	handle @leantime {
+		reverse_proxy 100.79.21.111:15007
+	}
+
+	handle {
+		abort
+	}
 }
-
-jellyfin.home {
-	reverse_proxy 100.79.21.111:15002
-	tls internal
-	}
-
-paperless.home {
-	tls internal
-	reverse_proxy 100.79.21.111:15003
-	}
-
-firefly.home {
-	tls internal
-	reverse_proxy 100.79.21.111:15004
-	}
-
-fireflyimport.home {
-	tls internal
-	reverse_proxy 100.79.21.111:15005
-	}
-
-readeck.home {
-	tls internal
-	reverse_proxy 100.79.21.111:15006
-	}
-
-nullboard.home {
-	tls internal
-	reverse_proxy 100.79.21.111:15007
-	}
