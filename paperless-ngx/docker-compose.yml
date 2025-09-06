@@ -56,13 +56,13 @@ services:
       - gotenberg
       - tika
     ports:
-      - "${TAILSCALE_IP}:15003:8000"
+      - "100.79.21.111:15003:8000"
     volumes:
       - data:/usr/src/paperless/data
       - media:/usr/src/paperless/media
-      - ./export:/usr/src/paperless/export
-      - ./consume:/usr/src/paperless/consume
-      - ./tmp:/tmp/paperless
+      - /opt/docker/paperless-ngx/export:/usr/src/paperless/export
+      - /opt/docker/paperless-ngx/consume:/usr/src/paperless/consume
+      - /opt/docker/paperless-ngx/tmp:/tmp/paperless
     env_file: docker-compose.env
     environment:
       PAPERLESS_REDIS: redis://broker:6379
