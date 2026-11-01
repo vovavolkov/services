@@ -19,7 +19,6 @@ x-mc-env: &mc-env
   # stays at the original value. Raising it will get the JVM OOM-killed.
   MEMORY: "2048M"
   MAX_PLAYERS: "2"
-  MOTD: "A Minecraft server"
   ICON: "https://opengameart.org/sites/default/files/heart%20pixel%20art%20254x\
     254.png"
   USE_AIKAR_FLAGS: "false"
@@ -27,12 +26,8 @@ x-mc-env: &mc-env
   TZ: "Europe/London"
   DIFFICULTY: "2"
   SPAWN_PROTECTION: "0"
-  OPS: |-
-    gettywreckty
   ENABLE_WHITELIST: "true"
-  WHITELIST: |-
-    gettywreckty
-    player2
+  # MOTD, OPS and WHITELIST come from .env (see .env.template)
   MODRINTH_PROJECTS: |-
     fabric-api
     lithium
@@ -59,6 +54,7 @@ services:
     environment:
       <<: *mc-env
       SETUP_ONLY: "TRUE"
+    env_file: .env
     volumes:
       - "/opt/docker/mc-survival:/data"
     restart: "no"
@@ -90,6 +86,7 @@ services:
       - "100.79.21.111:25575:25575"
     environment:
       <<: *mc-env
+    env_file: .env
     volumes:
       - "/opt/docker/mc-survival:/data"
   # Backups are handled entirely by this side-car. It uses RCON to flush the
