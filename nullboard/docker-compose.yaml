@@ -1,9 +1,0 @@
----
-services:
-  nullboard:
-    image: richardsoper/nullboard:latest
-    container_name: Nullboard
-    restart: always
-    ports:
-      - "100.79.21.111:15007:80"
-

@@ -1,1 +1,13 @@
+# Secrets: each stack keeps real values in .env files next to its compose file
 *.env
+
+# Local backups of edited files
+*.bak*
+*.old
+
+# Runtime data
+mc-survival/.data/
+pingvin/data/
+
+# Not deployed
+metadata/

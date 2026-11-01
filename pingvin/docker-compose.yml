@@ -1,0 +1,12 @@
+services:
+  pingvin-share-x:
+    container_name: pingvin-share-x
+    image: smp46/pingvin-share-x
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - TRUST_PROXY=true
+    volumes:
+      - "./data:/opt/app/backend/data"
+      - "./data/images:/opt/app/frontend/public/img"

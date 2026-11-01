@@ -20,6 +20,15 @@ vovavolkov.com {
 	}
 }
 
+share.vovavolkov.com {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+		propagation_delay 2m
+		resolvers 1.1.1.1
+	}
+
+	reverse_proxy 127.0.0.1:3000
+}
 # PRIVATE services (only Tailnet)
 *.vovavolkov.com {
 	bind 100.79.21.111
@@ -32,37 +41,37 @@ vovavolkov.com {
 
 	@adguard host adguard.vovavolkov.com
 	handle @adguard {
-		reverse_proxy 100.79.21.111:15000
-	}
-
-	@jellyfin host jellyfin.vovavolkov.com
-	handle @jellyfin {
-		reverse_proxy 100.79.21.111:15002
+		reverse_proxy 127.0.0.1:15000
 	}
 
 	@paperless host paperless.vovavolkov.com
 	handle @paperless {
-		reverse_proxy 100.79.21.111:15003
+		reverse_proxy 127.0.0.1:15003
 	}
 
 	@firefly host firefly.vovavolkov.com
 	handle @firefly {
-		reverse_proxy 100.79.21.111:15004
+		reverse_proxy 127.0.0.1:15004
 	}
 
 	@fireflyimport host fireflyimport.vovavolkov.com
 	handle @fireflyimport {
-		reverse_proxy 100.79.21.111:15005
+		reverse_proxy 127.0.0.1:15005
 	}
 
 	@readeck host readeck.vovavolkov.com
 	handle @readeck {
-		reverse_proxy 100.79.21.111:15006
+		reverse_proxy 127.0.0.1:15006
 	}
 
-	@leantime host leantime.vovavolkov.com
-	handle @leantime {
-		reverse_proxy 100.79.21.111:15007
+	@mealie host mealie.vovavolkov.com
+	handle @mealie {
+		reverse_proxy 127.0.0.1:15007
+	}
+
+	@share host share.vovavolkov.com
+	handle @share {
+		reverse_proxy 127.0.0.1:3000
 	}
 
 	handle {
