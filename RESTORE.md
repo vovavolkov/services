@@ -1,6 +1,6 @@
 # Restoring backups
 
-Every restore is a script in [`restore/`](restore/). Run them on `h`. They all
+Every restore is a script in [`restore/`](restore/). Run them on `vovaserver`. They all
 take the backup you want, prompt before destroying anything, and print what to
 check afterwards.
 
@@ -100,6 +100,6 @@ of those four files somewhere outside this box.
 
 ## If a script itself needs rolling back
 
-Previous versions of the backup scripts, the old `mc-survival` compose file and
-the old crontab are kept on `h` under `~/.script-backups/YYYYMMDD-HHMMSS/`.
-Restore the crontab with `crontab ~/.script-backups/<stamp>/crontab.txt`.
+The backup scripts and a copy of the crontab (`backup/crontab.txt`) are in this
+repo. Roll back with git, then reinstall the crontab with
+`crontab backup/crontab.txt`.

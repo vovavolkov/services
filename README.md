@@ -1,6 +1,6 @@
 # services
 
-Docker Compose stacks for my homelab, a small Linux box (`h`) reachable over Tailscale.
+Docker Compose stacks for my homelab, a small Linux box (`vovaserver`) reachable over Tailscale.
 
 | Stack | What it is | Exposure |
 |---|---|---|
