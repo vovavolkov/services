@@ -22,3 +22,5 @@ Docker Compose stacks for my homelab, a small Linux box (`h`) reachable over Tai
 ## Backups and restore
 
 Backups run from cron (Firefly III, Paperless-ngx) and from the `mc-backup` side-car (Minecraft). [RESTORE.md](RESTORE.md) explains what is backed up and how to restore each service with the scripts in [`restore/`](restore/).
+
+The whole routine (what, when, where, Mac pull, updating stacks) is documented in [BACKUPS.md](BACKUPS.md).

@@ -28,14 +28,14 @@ rehearsal instead of the live service.
 
 | What | Produced by | Schedule | Format in `~/backups` | Retention |
 |---|---|---|---|---|
-| Firefly III | `scripts/backup_firefly_docker.sh` | cron, 04:00 on the 1st | `fireflyiii_YYYYMMDD.tar.gz` + `.sha256` | newest 6 |
-| Paperless-ngx | `scripts/paperlessbackup.sh` → `scripts/backup.sh` | cron, 03:00 on the 1st | `paperless_YYYYMMDD.tar.gz` | newest 2 |
-| Syncthing `uni` folder | `scripts/backup.sh` | cron, 03:00 Sunday | `uni-sync_YYYYMMDD.tar.gz` | newest 2 |
+| Firefly III | `backup/backup_firefly_docker.sh` | cron, 04:00 on the 1st | `fireflyiii_YYYYMMDD.tar.gz` + `.sha256` | newest 6 |
+| Paperless-ngx | `backup/paperlessbackup.sh` → `backup/backup.sh` | cron, 03:00 on the 1st | `paperless_YYYYMMDD.tar.gz` | newest 2 |
+| Syncthing `uni` folder | `backup/backup.sh` | cron, 03:00 Sunday | `uni-sync_YYYYMMDD.tar.gz` | newest 2 |
 | Minecraft survival world | `mc-backup` side-car in `mc-survival/docker-compose.yaml` | 04:00 daily, in-container cron | `mc-survival/mc-survival-YYYYMMDD-HHMMSS/` (directories) | newest 5 |
 
-The backup scripts live in `~/scripts` on `h`, which is not a git repository.
-The restore scripts live here, in git, deliberately — they are what you need
-after losing the box.
+The backup scripts live in [`backup/`](backup/) and the restore scripts in
+[`restore/`](restore/), both in git, deliberately — they are what you need
+after losing the box. See [BACKUPS.md](BACKUPS.md) for the whole routine.
 
 ## Checksum files are not all the same thing
 
@@ -57,7 +57,7 @@ handles both without being told which is which.
 **Restoring Paperless destroys the current instance.** The archive is
 `document_exporter` output, and paperless only imports cleanly into an empty
 instance, so `restore-paperless.sh` deletes the database and media volumes
-before importing. Run `scripts/paperlessbackup.sh` first if the current state
+before importing. Run `backup/paperlessbackup.sh` first if the current state
 still matters. The compose project is named `paperless`, not `paperless-ngx`
 after its directory — the script reads the real name from
 `docker compose config` rather than guessing the volume prefix.

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Restore Paperless-ngx from a backup made by scripts/paperlessbackup.sh.
+# Restore Paperless-ngx from a backup made by backup/paperlessbackup.sh.
 #
 # The archive holds the output of document_exporter, so restoring is an import,
 # not a file copy -- and paperless only imports cleanly into an empty instance.
@@ -20,7 +20,7 @@ Usage: $(basename "$0") [-y] <archive|datestamp>
   Accepts a full path, a filename, or just the date (e.g. 20260823).
 
   WARNING: this deletes the current paperless database and media volumes.
-  Anything not in the archive is lost. Run scripts/paperlessbackup.sh first
+  Anything not in the archive is lost. Run backup/paperlessbackup.sh first
   if the current state still matters.
 
   -y, --yes   skip the confirmation prompt (for unattended use)

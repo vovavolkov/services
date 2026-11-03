@@ -1,0 +1,87 @@
+# Backups
+
+Overview of the whole backup routine. Restore procedures are in [RESTORE.md](RESTORE.md) and the scripts in [`restore/`](restore/).
+
+## What is backed up
+
+| What | Produced by | Output in `~/backups` (server) |
+|---|---|---|
+| Syncthing `uni` folder (`/home/vova/Syncthing/uni`) | `backup/backup.sh` | `uni-sync_YYYYMMDD.tar.gz`, `uni-sync.checksum` |
+| Paperless-ngx | `backup/paperlessbackup.sh` (runs `document_exporter`, then `backup.sh` on the export dir) | `paperless_YYYYMMDD.tar.gz`, `paperless.checksum` |
+| Firefly III (MariaDB dump + uploads) | `backup/backup_firefly_docker.sh` | `fireflyiii_YYYYMMDD.tar.gz` + `.sha256` |
+| Minecraft survival world | `mc-backup` side-car in `mc-survival/docker-compose.yaml` (not cron) | `mc-survival/mc-survival-YYYYMMDD-HHMMSS/` (rsync directories), daily 04:00, newest 5 kept |
+
+`survival-world_*.tar.gz` in `~/backups` is a legacy tarball from 2025 (made by the old `backup.sh` cron job, no longer scheduled).
+
+## Schedule (server, user `vova`)
+
+Exact copy in [`backup/crontab.txt`](backup/crontab.txt):
+
+```
+0 3 * * 0 /home/vova/services/backup/backup.sh /home/vova/Syncthing/uni uni-sync > /dev/null 2>&1
+0 3 1 * * /home/vova/services/backup/paperlessbackup.sh
+0 4 1 * * /home/vova/services/backup/backup_firefly_docker.sh
+```
+
+- uni-sync: Sundays 03:00
+- Paperless: 1st of the month, 03:00
+- Firefly III: 1st of the month, 04:00
+
+The crontab itself is not read from git. After editing `backup/crontab.txt`, install it with `crontab` (note it contains only the job lines, no comment header).
+
+## Where tarballs go and how they rotate
+
+All on the server in `/home/vova/backups`.
+
+- `backup.sh <source_path> <name>`: computes an md5 over all files in the source; if it matches `<name>.checksum` the backup is skipped ("No changes detected"). Otherwise it writes `<name>_YYYYMMDD.tar.gz`, updates the checksum file and keeps the newest 2 tarballs (`MAX_BACKUPS=2`). The checksum file is a hash of the source tree, not of the archive.
+- `paperlessbackup.sh`: exports into `/opt/docker/paperless-ngx/export` with `document_exporter -d` (snapshot, deleted docs removed), then calls `backup.sh` on that directory with name `paperless`. Newest 2 kept; skipped if nothing changed.
+- `backup_firefly_docker.sh`: dumps MariaDB (`firefly_iii_db`) and copies uploads from `firefly_iii_core`, tars them, verifies the archive (non-empty dump, tables `users`, `accounts`, `transactions`, uploads dir), writes a real `.sha256` of the archive and keeps the newest 6 (`MAX_BACKUPS`).
+- Credentials: the Firefly script reads `MYSQL_*` from `fireflyiii/.db.env` (not committed). No secrets are hardcoded in any script.
+- Paths are overridable by environment variable (`BACKUP_DIR`, `FIREFLY_DIR`, `PAPERLESS_DIR`, `EXPORT_DIR`, `BACKUP_SCRIPT`).
+
+## Mac pull (off-site copy)
+
+`/Users/vova/backups/copyBackups.sh` on the Mac, run from the Mac crontab:
+
+```
+0 5 * * 1 /Users/vova/backups/copyBackups.sh
+```
+
+Mondays 05:00. It ssh's to `vovaserver` as `vova`, picks the newest of each of these in `/home/vova/backups`, and rsyncs them to `~/backups` on the Mac:
+
+- `paperless_*.tar.gz`
+- `survival-world_*.tar.gz` (legacy tarball only; the current Minecraft backups in `mc-survival/` are not pulled)
+- `fireflyiii_*.tar.gz`
+- `uni-sync_*.tar.gz`
+
+It then keeps the newest 3 of each on the Mac. The script is Mac-only and is not in this repo. The Mac must be on and able to reach `vovaserver` at that time.
+
+## Configs
+
+- Stack configuration (compose files, restore and backup scripts, docs) is this git repo, remote `git@github.com:vovavolkov/services.git`.
+- Secrets live in `*.env` files next to each compose file and are gitignored. Keep a copy of them outside the server (see RESTORE.md, Firefly `APP_KEY`).
+- Runtime data (`mc-survival/.data/`, `pingvin/data/`) is gitignored and covered only by the backups above where listed.
+
+## Restore
+
+See [RESTORE.md](RESTORE.md) and the per-service scripts in [`restore/`](restore/) (`restore-firefly.sh`, `restore-paperless.sh`, `restore-minecraft.sh`, `restore-uni-sync.sh`).
+
+## Pushing from the server
+
+The server has no GitHub key. Push from the Mac with agent forwarding:
+
+```
+ssh -A h 'cd ~/services && git push'
+```
+
+Test first with `ssh -A h 'ssh -T git@github.com'` (should greet `vovavolkov`). A deploy key on the server is planned.
+
+## Updating stacks
+
+In each stack directory:
+
+```
+docker compose pull && docker compose up -d
+```
+
+The old `update_services.sh` helper was dropped.

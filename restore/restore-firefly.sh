@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Restore Firefly III from a backup made by scripts/backup_firefly_docker.sh.
+# Restore Firefly III from a backup made by backup/backup_firefly_docker.sh.
 #
 # Replaces the database and the uploads volume with the contents of the archive.
 #
