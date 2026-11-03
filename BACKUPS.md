@@ -69,9 +69,7 @@ See [RESTORE.md](RESTORE.md) and the per-service scripts in [`restore/`](restore
 
 ## Pushing from the server
 
-The server has no GitHub key yet. Until a deploy key is added, push via the Mac: clone the repo on the Mac, run `git fetch h:services main`, then `git merge --ff-only FETCH_HEAD`, then `git push origin main`. Check that the GitHub HEAD (`gh api repos/vovavolkov/services/commits/HEAD --jq .sha`) matches the server HEAD.
-
-Planned: a deploy key with write access, with `core.sshCommand` set in the repo so `git push` works directly from the server.
+The server pushes directly with a deploy key: `~/.ssh/services_deploy` (ed25519), added to the GitHub repo under Settings > Deploy keys with write access. The repo uses it via `git config core.sshCommand "ssh -i ~/.ssh/services_deploy -o IdentitiesOnly=yes"`, so plain `git push` / `git pull` work on the server. The key only has access to this repo.
 
 ## Updating stacks
 
