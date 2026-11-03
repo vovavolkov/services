@@ -13,7 +13,7 @@ set -euo pipefail
 
 FIREFLY_DIR="${FIREFLY_DIR:-/home/vova/services/fireflyiii}"
 BACKUP_DIR="${BACKUP_DIR:-/home/vova/backups}"
-MAX_BACKUPS="${MAX_BACKUPS:-6}"
+MAX_BACKUPS="${MAX_BACKUPS:-3}"
 DB_CONTAINER="${DB_CONTAINER:-firefly_iii_db}"
 APP_CONTAINER="${APP_CONTAINER:-firefly_iii_core}"
 

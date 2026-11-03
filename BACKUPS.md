@@ -35,7 +35,7 @@ All on the server in `/home/vova/backups`.
 
 - `backup.sh <source_path> <name>`: computes an md5 over all files in the source; if it matches `<name>.checksum` the backup is skipped ("No changes detected"). Otherwise it writes `<name>_YYYYMMDD.tar.gz`, updates the checksum file and keeps the newest 2 tarballs (`MAX_BACKUPS=2`). The checksum file is a hash of the source tree, not of the archive.
 - `paperlessbackup.sh`: exports into `/opt/docker/paperless-ngx/export` with `document_exporter -d` (snapshot, deleted docs removed), then calls `backup.sh` on that directory with name `paperless`. Newest 2 kept; skipped if nothing changed.
-- `backup_firefly_docker.sh`: dumps MariaDB (`firefly_iii_db`) and copies uploads from `firefly_iii_core`, tars them, verifies the archive (non-empty dump, tables `users`, `accounts`, `transactions`, uploads dir), writes a real `.sha256` of the archive and keeps the newest 6 (`MAX_BACKUPS`).
+- `backup_firefly_docker.sh`: dumps MariaDB (`firefly_iii_db`) and copies uploads from `firefly_iii_core`, tars them, verifies the archive (non-empty dump, tables `users`, `accounts`, `transactions`, uploads dir), writes a real `.sha256` of the archive and keeps the newest 3 (`MAX_BACKUPS`).
 - Credentials: the Firefly script reads `MYSQL_*` from `fireflyiii/.db.env` (not committed). No secrets are hardcoded in any script.
 - Paths are overridable by environment variable (`BACKUP_DIR`, `FIREFLY_DIR`, `PAPERLESS_DIR`, `EXPORT_DIR`, `BACKUP_SCRIPT`).
 
