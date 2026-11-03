@@ -1,0 +1,12 @@
+# /etc/systemd/system/webhook.service
+[Unit]
+Description=Webhook service
+After=network.target
+
+[Service]
+Type=exec
+ExecStart=webhook -verbose -hooks /etc/webhook/hooks.json
+
+# Which user should the webhooks run as?
+User=vova
+Group=vova

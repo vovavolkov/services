@@ -15,6 +15,7 @@ cd ~/services/restore
 |---|---|---|
 | Firefly III | `restore/restore-firefly.sh` | date stamp, filename, or path |
 | Paperless-ngx | `restore/restore-paperless.sh` | date stamp, filename, or path |
+| AdGuard Home settings | `restore/restore-adguard.sh` | filename, path, date stamp, or nothing for the newest |
 | Minecraft survival world | `restore/restore-minecraft.sh` | `latest`, a snapshot name, or a legacy `.tar.gz` |
 | Syncthing `uni` folder | `restore/restore-uni-sync.sh` | date stamp, filename, or path |
 
@@ -31,6 +32,7 @@ rehearsal instead of the live service.
 | Firefly III | `backup/backup_firefly_docker.sh` | cron, 04:00 on the 1st | `fireflyiii_YYYYMMDD.tar.gz` + `.sha256` | newest 6 |
 | Paperless-ngx | `backup/paperlessbackup.sh` → `backup/backup.sh` | cron, 03:00 on the 1st | `paperless_YYYYMMDD.tar.gz` | newest 2 |
 | Syncthing `uni` folder | `backup/backup.sh` | cron, 03:00 Sunday | `uni-sync_YYYYMMDD.tar.gz` | newest 2 |
+| AdGuard Home settings | `backup/backup_adguard.sh` | cron, 03:30 on the 1st | `adguard_YYYYMMDD.yaml` + `.sha256` | newest 3 |
 | Minecraft survival world | `mc-backup` side-car in `mc-survival/docker-compose.yaml` | 04:00 daily, in-container cron | `mc-survival/mc-survival-YYYYMMDD-HHMMSS/` (directories) | newest 5 |
 
 The backup scripts live in [`backup/`](backup/) and the restore scripts in
@@ -69,6 +71,8 @@ something that already synced everywhere. Use
 `restore-uni-sync.sh --diff-only <archive>` to see what would change without
 writing anything. The restore runs `rsync` without `--delete`, so files present
 now but absent from the backup survive.
+
+**AdGuard restores settings only.** `restore-adguard.sh [file]` (default: newest `adguard_*.yaml`) verifies the `.sha256`, stops `adguardhome-adguardhome-1`, copies the file over `AdGuardHome.yaml` in the config volume, starts the container and checks that the admin interface answers inside it. Query logs and statistics are not part of the backup. `--dry-run` verifies the file and prints the steps without changing anything.
 
 **Minecraft restores keep the old world.** `restore-minecraft.sh` moves the
 current world to `world.before-restore-<timestamp>` instead of deleting it, and

@@ -1,0 +1,28 @@
+[
+{
+	"id": "manage-mc",
+		"execute-command": "/var/scripts/manage-mc.sh",
+		"command-working-directory": "/var/webhook",
+		"pass-arguments-to-command": [
+		{
+			"source": "payload",
+			"name": "action"
+		},
+		{
+			"source": "payload",
+			"name": "service"
+		}
+		]
+},
+{
+	"id": "payload",
+	"execute-command": "/var/scripts/HTTPtoMQTT.sh",
+	"pass-arguments-to-command":
+		[
+		{
+			"source": "payload",
+			"name": "message"
+		}		
+		]
+}
+]
