@@ -11,7 +11,7 @@ Overview of the whole backup routine. Restore procedures are in [RESTORE.md](RES
 | Firefly III (MariaDB dump + uploads) | `backup/backup_firefly_docker.sh` | `fireflyiii_YYYYMMDD.tar.gz` + `.sha256` |
 | Minecraft survival world | `mc-backup` side-car in `mc-survival/docker-compose.yaml` (not cron) | `mc-survival/mc-survival-YYYYMMDD-HHMMSS/` (rsync directories), daily 04:00, newest 5 kept |
 
-`survival-world_*.tar.gz` in `~/backups` is a legacy tarball from 2025 (made by the old `backup.sh` cron job, no longer scheduled).
+Archived Minecraft world: the world played with my girlfriend (vanilla, then Fabric; last played 24 Jan 2026) is kept permanently as `~/backups/archive/mc-gf-world-fabric-20260124.tar.gz` (+ `.sha256`), a full server snapshot (world, config, server.properties; mods were auto-downloaded by the compose setup, see the git history of `mc-survival/`). A verified copy is in `~/backups/archive/` on the Mac. `archive/` is never rotated by any script. Restore: extract and point a server data dir at it. Old copies (`~/old-world`, `survival-world_*.tar.gz`, the Oct 2025 side-car backup) were removed on 3 Nov 2026 after verifying the archive.
 
 ## Schedule (server, user `vova`)
 
@@ -51,11 +51,11 @@ Mondays 05:00. It connects by ssh to `vovaserver` as `vova`, picks the newest of
 
 - `paperless_*.tar.gz` (Mac keeps newest 3)
 - `fireflyiii_*.tar.gz` (Mac keeps newest 3)
-- `uni-sync_*.tar.gz` (Mac keeps newest 1, because each is about 1.1 GB)
+- `uni-sync_*.tar.gz` (Mac keeps newest 3, about 1.1 GB each; Syncthing is sync not backup, so these protect against deletions spreading)
 
 The script is Mac-only and is not in this repo. The Mac must be on and able to reach `vovaserver` at that time.
 
-Open item: the Minecraft side-car backups in `~/backups/mc-survival/` are server-only and are not pulled to the Mac. The old `survival-world_*` pull was removed because it only ever copied a stale Sep 2025 tarball.
+Open item: the Minecraft side-car backups in `~/backups/mc-survival/` are server-only and are not pulled to the Mac. If a new world is started, the side-car prunes to the newest 5 daily backups; the old world is safe in `archive/`.
 
 ## Configs
 
