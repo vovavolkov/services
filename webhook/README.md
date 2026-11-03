@@ -11,7 +11,7 @@ Hooks are called as `http://100.79.21.111:9000/hooks/<id>` (tailnet only).
 
 ## Service
 
-Systemd unit `webhook` ([webhook.service](webhook.service)), runs as user `vova`: `webhook -verbose -ip 100.79.21.111 -hooks /etc/webhook/hooks.json`. The `-ip` flag binds it to the Tailscale address only, so it is unreachable from the public internet regardless of UFW. The unit starts after `tailscaled` and restarts on failure in case the Tailscale address is not up yet.
+Systemd unit `webhook` ([webhook.service](webhook.service)), runs as user `vova`: `webhook -verbose -ip "$(tailscale ip -4)" -hooks /etc/webhook/hooks.json`. The `-ip` flag binds it to the Tailscale address only (looked up at start, not hardcoded), so it is unreachable from the public internet regardless of UFW. The unit starts after `tailscaled` and restarts on failure in case the Tailscale address is not up yet.
 
 ## Live file locations
 

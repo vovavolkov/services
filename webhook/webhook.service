@@ -7,7 +7,7 @@ Wants=network-online.target tailscaled.service
 
 [Service]
 Type=exec
-ExecStart=webhook -verbose -ip 100.79.21.111 -hooks /etc/webhook/hooks.json
+ExecStart=/bin/sh -c 'exec webhook -verbose -ip "$(tailscale ip -4)" -hooks /etc/webhook/hooks.json'
 Restart=on-failure
 RestartSec=5
 
