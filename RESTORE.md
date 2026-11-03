@@ -29,7 +29,7 @@ rehearsal instead of the live service.
 
 | What | Produced by | Schedule | Format in `~/backups` | Retention |
 |---|---|---|---|---|
-| Firefly III | `backup/backup_firefly_docker.sh` | cron, 04:00 on the 1st | `fireflyiii_YYYYMMDD.tar.gz` + `.sha256` | newest 6 |
+| Firefly III | `backup/backup_firefly_docker.sh` | cron, 04:00 on the 1st | `fireflyiii_YYYYMMDD.tar.gz` + `.sha256` | newest 3 |
 | Paperless-ngx | `backup/paperlessbackup.sh` → `backup/backup.sh` | cron, 03:00 on the 1st | `paperless_YYYYMMDD.tar.gz` | newest 2 |
 | Syncthing `uni` folder | `backup/backup.sh` | cron, 03:00 Sunday | `uni-sync_YYYYMMDD.tar.gz` | newest 2 |
 | AdGuard Home settings | `backup/backup_adguard.sh` | cron, 03:30 on the 1st | `adguard_YYYYMMDD.yaml` + `.sha256` | newest 3 |
