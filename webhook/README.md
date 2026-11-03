@@ -7,11 +7,11 @@
 - `manage-mc` (`scripts/manage-mc.sh`): `start` or `stop` a Minecraft stack. Payload fields `action` and `service`; runs `docker compose up -d` / `docker compose down` in `/home/vova/services/mc-<service>/`. Working directory `/var/webhook`.
 - `payload` (`scripts/HTTPtoMQTT.sh`): publishes the payload field `message` to the MQTT topic `to-poppy` with `mosquitto_pub`.
 
-Hooks are called as `http://<host>:9000/hooks/<id>`.
+Hooks are called as `http://100.79.21.111:9000/hooks/<id>` (tailnet only).
 
 ## Service
 
-Systemd unit `webhook`, runs as user `vova`: `webhook -verbose -hooks /etc/webhook/hooks.json`. It listens on port 9000 on all interfaces, but UFW only allows 9000 via `tailscale0`.
+Systemd unit `webhook` ([webhook.service](webhook.service)), runs as user `vova`: `webhook -verbose -ip 100.79.21.111 -hooks /etc/webhook/hooks.json`. The `-ip` flag binds it to the Tailscale address only, so it is unreachable from the public internet regardless of UFW. The unit starts after `tailscaled` and restarts on failure in case the Tailscale address is not up yet.
 
 ## Live file locations
 

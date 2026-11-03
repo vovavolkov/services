@@ -1,12 +1,19 @@
 # /etc/systemd/system/webhook.service
 [Unit]
 Description=Webhook service
-After=network.target
+# Listens on the Tailscale address only, so wait for Tailscale to be up
+After=network-online.target tailscaled.service
+Wants=network-online.target tailscaled.service
 
 [Service]
 Type=exec
-ExecStart=webhook -verbose -hooks /etc/webhook/hooks.json
+ExecStart=webhook -verbose -ip 100.79.21.111 -hooks /etc/webhook/hooks.json
+Restart=on-failure
+RestartSec=5
 
 # Which user should the webhooks run as?
 User=vova
 Group=vova
+
+[Install]
+WantedBy=multi-user.target
