@@ -1,14 +1,12 @@
 # /etc/systemd/system/webhook.service
 [Unit]
 Description=Webhook service
-# Listens on the Tailscale address only (looked up at start). If the lookup fails
-# the unit exits instead of binding to all interfaces, and Restart= retries.
-After=network-online.target tailscaled.service
-Wants=network-online.target tailscaled.service
+After=network.target
 
 [Service]
 Type=exec
-ExecStart=/bin/sh -c 'ip=$(tailscale ip -4) && [ -n "$ip" ] && exec webhook -verbose -ip "$ip" -hooks /etc/webhook/hooks.json'
+# Localhost only; reached over the tailnet through Caddy at https://webhook.vovavolkov.com
+ExecStart=webhook -verbose -ip 127.0.0.1 -hooks /etc/webhook/hooks.json
 Restart=on-failure
 RestartSec=5
 

@@ -69,6 +69,11 @@ share.vovavolkov.com {
 		reverse_proxy 127.0.0.1:15007
 	}
 
+	@webhook host webhook.vovavolkov.com
+	handle @webhook {
+		reverse_proxy 127.0.0.1:9000
+	}
+
 	@share host share.vovavolkov.com
 	handle @share {
 		reverse_proxy 127.0.0.1:3000

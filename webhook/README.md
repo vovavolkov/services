@@ -7,11 +7,11 @@
 - `manage-mc` (`scripts/manage-mc.sh`): `start` or `stop` a Minecraft stack. Payload fields `action` and `service`; runs `docker compose up -d` / `docker compose down` in `/home/vova/services/mc-<service>/`. Working directory `/var/webhook`.
 - `payload` (`scripts/HTTPtoMQTT.sh`): publishes the payload field `message` to the MQTT topic `to-poppy` with `mosquitto_pub`.
 
-Hooks are called as `http://100.79.21.111:9000/hooks/<id>` (tailnet only).
+Hooks are called as `https://webhook.vovavolkov.com/hooks/<id>` (tailnet only, via Caddy).
 
 ## Service
 
-Systemd unit `webhook` ([webhook.service](webhook.service)), runs as user `vova`: `webhook -verbose -ip "$(tailscale ip -4)" -hooks /etc/webhook/hooks.json`. The `-ip` flag binds it to the Tailscale address only (looked up at start, not hardcoded), so it is unreachable from the public internet regardless of UFW. The unit starts after `tailscaled` and restarts on failure in case the Tailscale address is not up yet.
+Systemd unit `webhook` ([webhook.service](webhook.service)), runs as user `vova`: `webhook -verbose -ip 127.0.0.1 -hooks /etc/webhook/hooks.json`. It listens on `127.0.0.1:9000` only. Caddy (`caddy/conf/Caddyfile`, `@webhook` in the private `*.vovavolkov.com` block, bound to the Tailscale address) proxies `https://webhook.vovavolkov.com` to it, so it is reachable only from the tailnet, over HTTPS.
 
 ## Live file locations
 
