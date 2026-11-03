@@ -47,14 +47,15 @@ All on the server in `/home/vova/backups`.
 0 5 * * 1 /Users/vova/backups/copyBackups.sh
 ```
 
-Mondays 05:00. It ssh's to `vovaserver` as `vova`, picks the newest of each of these in `/home/vova/backups`, and rsyncs them to `~/backups` on the Mac:
+Mondays 05:00. It connects by ssh to `vovaserver` as `vova`, picks the newest of each of these in `/home/vova/backups`, and rsyncs them to `~/backups` on the Mac:
 
-- `paperless_*.tar.gz`
-- `survival-world_*.tar.gz` (legacy tarball only; the current Minecraft backups in `mc-survival/` are not pulled)
-- `fireflyiii_*.tar.gz`
-- `uni-sync_*.tar.gz`
+- `paperless_*.tar.gz` (Mac keeps newest 3)
+- `fireflyiii_*.tar.gz` (Mac keeps newest 3)
+- `uni-sync_*.tar.gz` (Mac keeps newest 1, because each is about 1.1 GB)
 
-It then keeps the newest 3 of each on the Mac. The script is Mac-only and is not in this repo. The Mac must be on and able to reach `vovaserver` at that time.
+The script is Mac-only and is not in this repo. The Mac must be on and able to reach `vovaserver` at that time.
+
+Open item: the Minecraft side-car backups in `~/backups/mc-survival/` are server-only and are not pulled to the Mac. The old `survival-world_*` pull was removed because it only ever copied a stale Sep 2025 tarball.
 
 ## Configs
 
@@ -68,13 +69,9 @@ See [RESTORE.md](RESTORE.md) and the per-service scripts in [`restore/`](restore
 
 ## Pushing from the server
 
-The server has no GitHub key. Push from the Mac with agent forwarding:
+The server has no GitHub key yet. Until a deploy key is added, push via the Mac: clone the repo on the Mac, run `git fetch h:services main`, then `git merge --ff-only FETCH_HEAD`, then `git push origin main`. Check that the GitHub HEAD (`gh api repos/vovavolkov/services/commits/HEAD --jq .sha`) matches the server HEAD.
 
-```
-ssh -A h 'cd ~/services && git push'
-```
-
-Test first with `ssh -A h 'ssh -T git@github.com'` (should greet `vovavolkov`). A deploy key on the server is planned.
+Planned: a deploy key with write access, with `core.sshCommand` set in the repo so `git push` works directly from the server.
 
 ## Updating stacks
 
