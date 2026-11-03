@@ -7,6 +7,7 @@ Overview of the whole backup routine. Restore procedures are in [RESTORE.md](RES
 | What | Produced by | Output in `~/backups` (server) |
 |---|---|---|
 | Syncthing `uni` folder (`/home/vova/Syncthing/uni`) | `backup/backup.sh` | `uni-sync_YYYYMMDD.tar.gz`, `uni-sync.checksum` |
+| Syncthing `org` and `life` folders, stored encrypted (`/home/vova/Syncthing/org`, `/home/vova/Syncthing/life`) | `backup/backup.sh` | `org-enc_YYYYMMDD.tar.gz`, `life-enc_YYYYMMDD.tar.gz` + `.checksum` |
 | Paperless-ngx | `backup/paperlessbackup.sh` (runs `document_exporter`, then `backup.sh` on the export dir) | `paperless_YYYYMMDD.tar.gz`, `paperless.checksum` |
 | Firefly III (MariaDB dump + uploads) | `backup/backup_firefly_docker.sh` | `fireflyiii_YYYYMMDD.tar.gz` + `.sha256` |
 | AdGuard Home settings (`AdGuardHome.yaml` from the `adguardhome_config` volume; query logs and stats in the work volume are not backed up) | `backup/backup_adguard.sh` | `adguard_YYYYMMDD.yaml` + `.sha256` (mode 600, contains the admin password hash) |
@@ -20,12 +21,15 @@ Exact copy in [`backup/crontab.txt`](backup/crontab.txt):
 
 ```
 0 3 * * 0 /home/vova/services/backup/backup.sh /home/vova/Syncthing/uni uni-sync > /dev/null 2>&1
+10 3 * * 0 /home/vova/services/backup/backup.sh /home/vova/Syncthing/org org-enc > /dev/null 2>&1
+20 3 * * 0 /home/vova/services/backup/backup.sh /home/vova/Syncthing/life life-enc > /dev/null 2>&1
 0 3 1 * * /home/vova/services/backup/paperlessbackup.sh
 0 4 1 * * /home/vova/services/backup/backup_firefly_docker.sh
 30 3 1 * * /home/vova/services/backup/backup_adguard.sh
 ```
 
 - uni-sync: Sundays 03:00
+- org-enc, life-enc: Sundays 03:10 and 03:20
 - Paperless: 1st of the month, 03:00
 - Firefly III: 1st of the month, 04:00
 - AdGuard Home: 1st of the month, 03:30
@@ -74,6 +78,10 @@ The `webhook` service (hooks that start and stop Minecraft stacks and publish to
 - Runtime data (`mc-survival/.data/`, `pingvin/data/`) is gitignored and covered only by the backups above where listed.
 
 ## Restore
+
+## Encrypted folders (org, life)
+
+`~/org` and `~/life` on the Mac are shared with this server as Syncthing untrusted devices: the server holds only encrypted file names and contents (`*.syncthing-enc`) and never sees the password. The weekly tarballs therefore contain encrypted data. The folder password is in Bitwarden. Not pulled to the Mac (the Mac holds the plaintext originals).
 
 See [RESTORE.md](RESTORE.md) and the per-service scripts in [`restore/`](restore/) (`restore-firefly.sh`, `restore-adguard.sh`, `restore-paperless.sh`, `restore-minecraft.sh`, `restore-uni-sync.sh`).
 

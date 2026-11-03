@@ -32,6 +32,7 @@ rehearsal instead of the live service.
 | Firefly III | `backup/backup_firefly_docker.sh` | cron, 04:00 on the 1st | `fireflyiii_YYYYMMDD.tar.gz` + `.sha256` | newest 3 |
 | Paperless-ngx | `backup/paperlessbackup.sh` → `backup/backup.sh` | cron, 03:00 on the 1st | `paperless_YYYYMMDD.tar.gz` | newest 2 |
 | Syncthing `uni` folder | `backup/backup.sh` | cron, 03:00 Sunday | `uni-sync_YYYYMMDD.tar.gz` | newest 2 |
+| Syncthing `org`, `life` (encrypted) | `backup/backup.sh` | cron, 03:10 / 03:20 Sunday | `org-enc_YYYYMMDD.tar.gz`, `life-enc_YYYYMMDD.tar.gz` | newest 2 |
 | AdGuard Home settings | `backup/backup_adguard.sh` | cron, 03:30 on the 1st | `adguard_YYYYMMDD.yaml` + `.sha256` | newest 3 |
 | Minecraft survival world | `mc-backup` side-car in `mc-survival/docker-compose.yaml` | 04:00 daily, in-container cron | `mc-survival/mc-survival-YYYYMMDD-HHMMSS/` (directories) | newest 5 |
 
@@ -43,7 +44,7 @@ after losing the box. See [BACKUPS.md](BACKUPS.md) for the whole routine.
 
 - `fireflyiii_*.tar.gz.sha256` — a **real integrity checksum of the archive**.
   The restore script verifies it and refuses to continue on a mismatch.
-- `paperless.checksum`, `uni-sync.checksum`, `survival-world.checksum` — written
+- `paperless.checksum`, `uni-sync.checksum` — written
   by `backup.sh`, these hold an md5 of the **source tree at backup time**. They
   exist so the next run can skip work when nothing changed. They **cannot**
   verify an archive. For those the restore scripts fall back to `tar -tzf`,
@@ -87,6 +88,17 @@ here always contains the mods `mc-setup` downloads, so it would never trigger.
 ```bash
 docker compose -f ~/services/mc-survival/docker-compose.yaml exec mc-backup backup now
 ```
+
+## Encrypted org and life
+
+The archives hold Syncthing-encrypted data. Decrypt with the folder password from Bitwarden on any machine with Syncthing:
+
+```sh
+mkdir enc && tar -xzf ~/backups/life-enc_YYYYMMDD.tar.gz -C enc
+syncthing decrypt --password '<folder password>' --to life-restored enc/life
+```
+
+`--to` gets the plaintext tree. The same works for `org-enc`.
 
 ## Restoring onto a different machine
 

@@ -2,3 +2,5 @@
 0 3 1 * * /home/vova/services/backup/paperlessbackup.sh
 0 4 1 * * /home/vova/services/backup/backup_firefly_docker.sh
 30 3 1 * * /home/vova/services/backup/backup_adguard.sh
+10 3 * * 0 /home/vova/services/backup/backup.sh /home/vova/Syncthing/org org-enc > /dev/null 2>&1
+20 3 * * 0 /home/vova/services/backup/backup.sh /home/vova/Syncthing/life life-enc > /dev/null 2>&1
